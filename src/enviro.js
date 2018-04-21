@@ -6,13 +6,13 @@ const headers = {
     "Access-Control-Allow-Credentials": true
 };
 
-AWS.config.update({ region: process.env.SDB_REGION })
+AWS.config.update({ region: process.env.SDB_REGION });
 sdb = new AWS.SimpleDB();
 
 // Create Promise wrappers
 const sdbPutAttributes = params => new Promise(
     (resolve,reject) => {
-        sdb.PutAttribues(params, function(err, data) {
+        sdb.putAttributes(params, function(err, data) {
             if (err) reject(err);
             else resolve(data);
         })
@@ -33,7 +33,7 @@ async function handlePut(event) {
         return {
             statusCode: 200,
             headers: headers,
-            body: sdbPutAttributes(
+            body: await sdbPutAttributes(
                 {
                     DomainName: process.env.SDB_DOMAIN,
                     ItemName: uuidv1(),
@@ -45,6 +45,10 @@ async function handlePut(event) {
                         {
                             Name: 'collectedAt',
                             Value: String(event.collectedAt)
+                        },
+                        {
+                            Name: 'temperature',
+                            Value: String(event.temperature)
                         },
                         {
                             Name: 'accelerometer',
@@ -67,7 +71,7 @@ async function handlePut(event) {
             )
         }
     }
-    catch (err) {
+    catch(err) {
         return {
             statusCode: 500,
             headers: headers,
@@ -82,7 +86,7 @@ async function handleGet(event) {
 
 // Exports
 exports.put = async(event) => {
-
+    return await handlePut(event);
 }
 
 exports.get = async(event) => {
