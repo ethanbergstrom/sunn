@@ -13,6 +13,7 @@ sdb = new AWS.SimpleDB();
 const sdbPutAttributes = params => new Promise(
     (resolve,reject) => {
         sdb.putAttributes(params, function(err, data) {
+            console.log(err)
             if (err) reject(err);
             else resolve(data);
         })
@@ -20,7 +21,8 @@ const sdbPutAttributes = params => new Promise(
 )
 const sdbSelect = params => new Promise(
     (resolve,reject) => {
-        sdb.Select(params, function(err, data) {
+        sdb.select(params, function(err, data) {
+            console.log("help!")
             if (err) reject(err);
             else resolve(data);
         })
@@ -72,6 +74,7 @@ async function handlePut(event) {
         }
     }
     catch(err) {
+        console.log(JSON.stringify(err,undefined,2))
         return {
             statusCode: 500,
             headers: headers,
@@ -81,7 +84,21 @@ async function handlePut(event) {
 }
 
 async function handleGet(event) {
-
+    try {
+        return {
+            statusCode: 200,
+            headers: headers,
+            body: await sdbSelect({SelectExpression: `SELECT collectedAt, temperature FROM ${process.env.SDB_DOMAIN} WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-1)).toISOString()}'`})
+        }
+    }
+    catch(err) {
+        console.log(JSON.stringify(err,undefined,2))
+        return {
+            statusCode: 500,
+            headers: headers,
+            body: err
+        }
+    }
 }
 
 // Exports
@@ -90,5 +107,5 @@ exports.put = async(event) => {
 }
 
 exports.get = async(event) => {
-
+    return await handleGet(event);
 }
