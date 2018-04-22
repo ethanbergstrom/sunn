@@ -18,7 +18,7 @@ def invoke_lambda(lux, rgb, accelerometer, heading, temperature, pressure):
     }
 
     client.invoke(
-        FunctionName = 'enviro-store',
+        FunctionName = 'enviroStore',
         Payload = json.dumps(payload)
     )
 
