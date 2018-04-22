@@ -25,3 +25,27 @@ Resources:
         Variables:
           SDB_REGION: us-east-1
           SDB_DOMAIN: enviro_sandbox
+
+  enviro-store:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: enviro-sdb-store.store
+      Runtime: nodejs8.10
+      CodeUri: src/
+      Policies: SimpleDBFullAccess
+      Environment:
+        Variables:
+          SDB_REGION: us-east-1
+          SDB_DOMAIN: enviro_sandbox
+
+  enviro-retrieve:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: enviro-sdb-retrieve.retrieve
+      Runtime: nodejs8.10
+      CodeUri: src/
+      Policies: SimpleDBFullAccess
+      Environment:
+        Variables:
+          SDB_REGION: us-east-1
+          SDB_DOMAIN: enviro_sandbox
