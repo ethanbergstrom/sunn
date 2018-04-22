@@ -6,10 +6,8 @@ Resources:
   enviroStore:
     Type: AWS::Serverless::Function
     Properties:
-      MemorySize: 128
-      Handler: enviroStore.handle
+      Handler: enviroStore.handler
       Runtime: nodejs8.10
-      Timeout: 3
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -25,10 +23,8 @@ Resources:
   enviroRetrieve:
     Type: AWS::Serverless::Function
     Properties:
-      MemorySize: 128
-      Handler: enviroRetrieve.handle
+      Handler: enviroRetrieve.handler
       Runtime: nodejs8.10
-      Timeout: 3
       Policies:
         - Version: '2012-10-17'
           Statement:
