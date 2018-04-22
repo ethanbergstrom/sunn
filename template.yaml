@@ -1,31 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Simple CRUD webservice. State is stored in SimpleDB.
+Description: Simple Lambda service. State is stored in SimpleDB.
 Resources:
-  enviro-get:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: enviro.get
-      Runtime: nodejs8.10
-      CodeUri: src/
-      Policies: SimpleDBFullAccess
-      Environment:
-        Variables:
-          SDB_REGION: us-east-1
-          SDB_DOMAIN: enviro_sandbox
-
-  enviro-put:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: enviro.put
-      Runtime: nodejs8.10
-      CodeUri: src/
-      Policies: SimpleDBFullAccess
-      Environment:
-        Variables:
-          SDB_REGION: us-east-1
-          SDB_DOMAIN: enviro_sandbox
-
   enviro-store:
     Type: AWS::Serverless::Function
     Properties:
