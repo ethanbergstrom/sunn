@@ -6,6 +6,10 @@ const headers = {
     "Access-Control-Allow-Credentials": true
 };
 
+const allowedAttributes = ['temperature','accelerometer','lux','pressure','rgb'];
+
+const maxDaySpan = 31;
+
 AWS.config.update({ region: process.env.SDB_REGION });
 sdb = new AWS.SimpleDB();
 
@@ -13,21 +17,20 @@ sdb = new AWS.SimpleDB();
 const sdbPutAttributes = params => new Promise(
     (resolve,reject) => {
         sdb.putAttributes(params, function(err, data) {
-            console.log(err)
             if (err) reject(err);
             else resolve(data);
-        })
+        });
     }
-)
+);
+
 const sdbSelect = params => new Promise(
     (resolve,reject) => {
         sdb.select(params, function(err, data) {
-            console.log("help!")
             if (err) reject(err);
             else resolve(data);
-        })
+        });
     }
-)
+);
 
 // Create handlers
 async function handlePut(event) {
@@ -74,38 +77,51 @@ async function handlePut(event) {
         }
     }
     catch(err) {
-        console.log(JSON.stringify(err,undefined,2))
+        console.log(JSON.stringify(err,undefined,2));
         return {
             statusCode: 500,
             headers: headers,
             body: err
-        }
+        };
     }
-}
+};
 
 async function handleGet(event) {
     try {
-        return {
-            statusCode: 200,
-            headers: headers,
-            body: await sdbSelect({SelectExpression: `SELECT collectedAt, temperature FROM ${process.env.SDB_DOMAIN} WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-1)).toISOString()}'`})
+        if(allowedAttributes.includes(event.attribute) && event.daySpan <= maxDaySpan) {
+            return {
+                statusCode: 200,
+                headers: headers,
+                body: await sdbSelect(
+                    {
+                        SelectExpression: `
+                        SELECT 
+                            collectedAt, 
+                            ${event.attribute} 
+                        FROM ${process.env.SDB_DOMAIN} 
+                        WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-event.daySpan)).toISOString()}'
+                        `
+                    }
+                )
+            };
         }
+        else throw "Error: Invalid Parameter"
     }
     catch(err) {
-        console.log(JSON.stringify(err,undefined,2))
+        console.log(JSON.stringify(err,undefined,2));
         return {
             statusCode: 500,
             headers: headers,
             body: err
-        }
+        };
     }
-}
+};
 
 // Exports
 exports.put = async(event) => {
     return await handlePut(event);
-}
+};
 
 exports.get = async(event) => {
     return await handleGet(event);
-}
+};
