@@ -2,26 +2,41 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Simple Lambda service. State is stored in SimpleDB.
 Resources:
-  enviro-store:
+
+  enviroStore:
     Type: AWS::Serverless::Function
     Properties:
+      MemorySize: 128
       Handler: enviro-sdb-store.store
       Runtime: nodejs8.10
-      CodeUri: src/
-      Policies: SimpleDBFullAccess
+      Timeout: 3
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 
+                - 'sdb:PutAttributes'
+              Resource: 'arn:aws:sdb:*:*:domain/enviro*'
       Environment:
         Variables:
-          SDB_REGION: us-east-1
-          SDB_DOMAIN: enviro_sandbox
+          SDB_REGION:
+          SDB_DOMAIN:
 
-  enviro-retrieve:
+  enviroRetrieve:
     Type: AWS::Serverless::Function
     Properties:
+      MemorySize: 128
       Handler: enviro-sdb-retrieve.retrieve
       Runtime: nodejs8.10
-      CodeUri: src/
-      Policies: SimpleDBFullAccess
+      Timeout: 3
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: 
+                - 'sdb:PutAttributes'
+              Resource: 'arn:aws:sdb:*:*:domain/enviro*'
       Environment:
         Variables:
-          SDB_REGION: us-east-1
-          SDB_DOMAIN: enviro_sandbox
+          SDB_REGION:
+          SDB_DOMAIN:
