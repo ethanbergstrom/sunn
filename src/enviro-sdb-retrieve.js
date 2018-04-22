@@ -1,7 +1,7 @@
 var sdb = require('aws-sdb-promise');
 var headers = require('corsHeaders');
 
-const allowedAttributes = ['temperature','accelerometer','lux','pressure','rgb'];
+const allowedAttributes = ['temperature','accelerometer', 'heading', 'lux','pressure','rgb'];
 const maxDaySpan = 31;
 
 // Implement retrieve logic
@@ -36,6 +36,6 @@ async function retrieveImpl(event) {
 };
 
 // Exports
-exports.retrieve = async(event) => {
+exports.handler = async(event) => {
     return await retrieveImpl(event);
 };

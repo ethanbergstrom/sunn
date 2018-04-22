@@ -30,6 +30,10 @@ async function storeImpl(event) {
                             Value: String(event.accelerometer)
                         },
                         {
+                            Name: 'heading',
+                            Value: String(event.heading)
+                        },
+                        {
                             Name: 'lux',
                             Value: String(event.lux)
                         },
@@ -57,6 +61,6 @@ async function storeImpl(event) {
 };
 
 // Exports
-exports.store = async(event) => {
+exports.handler = async(event) => {
     return await storeImpl(event);
 };
