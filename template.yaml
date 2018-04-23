@@ -8,9 +8,9 @@ Parameters:
     Default: "enviroSandbox"
 Resources:
   enviroStore:
-    FunctionName: !Sub "${AWS::StackName}-Store"
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: !Sub "${AWS::StackName}-Store"
       Handler: enviroStore.handler
       Runtime: nodejs8.10
       AutoPublishAlias: live
@@ -28,9 +28,9 @@ Resources:
           SDB_REGION: !Ref "AWS::Region"
           SDB_DOMAIN: !Ref sdbDomain
   enviroRetrieve:
-    FunctionName: !Sub "${AWS::StackName}-Retrieve"
     Type: AWS::Serverless::Function
     Properties:
+      FunctionName: !Sub "${AWS::StackName}-Retrieve"
       Handler: enviroRetrieve.handler
       Runtime: nodejs8.10
       AutoPublishAlias: live
