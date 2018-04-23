@@ -8,6 +8,7 @@ Parameters:
     Default: "enviroSandbox"
 Resources:
   enviroStore:
+    Name: enviroStore
     Type: AWS::Serverless::Function
     Properties:
       Handler: enviroStore.handler
@@ -27,6 +28,7 @@ Resources:
           SDB_REGION: !Ref "AWS::Region"
           SDB_DOMAIN: !Ref sdbDomain
   enviroRetrieve:
+    Name: enviroStore
     Type: AWS::Serverless::Function
     Properties:
       Handler: enviroRetrieve.handler
