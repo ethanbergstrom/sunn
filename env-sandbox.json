@@ -1,3 +1,5 @@
 {
-    "SDB_DOMAIN": "enviroSandbox"
+    "Parameters": {
+        "SDB_DOMAIN": "enviroSandbox"
+    }
 }
