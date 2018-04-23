@@ -5,7 +5,7 @@ Parameters:
   SDB_DOMAIN:
     Type: String
     Description: SimpleDB Domain Name
-    Default: "enviroSandbox"
+    Default: enviroSandbox
 Resources:
   enviroStore:
     Type: AWS::Serverless::Function
