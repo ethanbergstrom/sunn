@@ -20,7 +20,7 @@ Resources:
               Resource: 'arn:aws:sdb:*:*:domain/enviro*'
       Environment:
         Variables:
-          SDB_REGION:
+          SDB_REGION: !Ref "AWS::Region"
           SDB_DOMAIN:
 
   enviroRetrieve:
@@ -40,5 +40,5 @@ Resources:
               Resource: 'arn:aws:sdb:*:*:domain/enviro*'
       Environment:
         Variables:
-          SDB_REGION:
+          SDB_REGION: !Ref "AWS::Region"
           SDB_DOMAIN:
