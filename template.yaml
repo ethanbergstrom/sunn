@@ -1,8 +1,12 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Simple Lambda service. State is stored in SimpleDB.
+Parameters:
+  SDB_DOMAIN:
+    Type: String
+    Description: SimpleDB Domain Name
+    Default: "enviroSandbox"
 Resources:
-
   enviroStore:
     Type: AWS::Serverless::Function
     Properties:
@@ -21,8 +25,7 @@ Resources:
       Environment:
         Variables:
           SDB_REGION: !Ref "AWS::Region"
-          SDB_DOMAIN:
-
+          SDB_DOMAIN: !Ref SDB_DOMAIN
   enviroRetrieve:
     Type: AWS::Serverless::Function
     Properties:
@@ -41,4 +44,4 @@ Resources:
       Environment:
         Variables:
           SDB_REGION: !Ref "AWS::Region"
-          SDB_DOMAIN:
+          SDB_DOMAIN: !Ref SDB_DOMAIN
