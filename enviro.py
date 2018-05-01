@@ -18,7 +18,7 @@ def invoke_lambda(lux, rgb, accelerometer, heading, temperature, pressure):
     }
 
     client.invoke(
-        FunctionName = 'caerus-Enviro-Store',
+        FunctionName = 'caerusEnviroStore',
         Payload = json.dumps(payload)
     )
 
