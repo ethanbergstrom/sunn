@@ -65,7 +65,7 @@ Resources:
             Resource: !GetAtt enviroRetrieve.Arn
           Version: '2012-10-17'
   enviroRetrieveInvokeIDPool:
-    Type: AWS::Congito::IdentityPool
+    Type: AWS::Cognito::IdentityPool
     Properties:
       IdentityPoolName: "${AWS::StackName}-Retrieve-Invoke-Pool"
       AllowUnauthenticatedIdentities: True
