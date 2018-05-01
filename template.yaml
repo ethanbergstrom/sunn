@@ -67,7 +67,7 @@ Resources:
   enviroRetrieveInvokeIDPool:
     Type: AWS::Cognito::IdentityPool
     Properties:
-      IdentityPoolName: "${AWS::StackName}-Retrieve-Invoke-Pool"
+      IdentityPoolName: !Sub "${AWS::StackName}-Retrieve-Invoke-Pool"
       AllowUnauthenticatedIdentities: True
   enviroRetrieveInvokeIDRoleAttachment:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
