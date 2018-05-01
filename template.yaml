@@ -90,4 +90,5 @@ Resources:
     Properties:
       IdentityPoolId: !Ref enviroRetrieveInvokeIDPool
       Roles:
-        unauthenticated : !GetAtt enviroRetrieveInvokeRole.Arn
+        - unauthenticated : !GetAtt enviroRetrieveInvokeRole.Arn
+        - authenticated : !GetAtt enviroRetrieveInvokeRole.Arn
