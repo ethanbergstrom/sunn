@@ -44,3 +44,34 @@ Resources:
         Variables:
           SDB_REGION: !Ref "AWS::Region"
           SDB_DOMAIN: !Ref sdbDomain
+  enviroRetrieveInvokeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: !Sub "${AWS::StackName}-Retrieve-Invoke"
+        PolicyDocument:
+          Statement:
+          - Effect: Allow
+            Action: "lambda:InvokeFunction"
+            Resource: !GetAtt enviroRetrieve.Arn
+          Version: '2012-10-17'
+  enviroRetrieveInvokeIDPool:
+    Type: AWS::Congito::IdentityPool
+    Properties:
+      IdentityPoolName: "${AWS::StackName}-Retrieve-Invoke-Pool"
+      AllowUnauthenticatedIdentities: True
+  enviroRetrieveInvokeIDRoleAttachment:
+    Type: AWS::Cognito::IdentityPoolRoleAttachment
+    Properties:
+      IdentityPoolId: !Ref enviroRetrieveInvokeIDPool
+      Roles:
+        unauthenticated : !GetAtt enviroRetrieveInvokeRole.Arn
