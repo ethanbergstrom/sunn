@@ -10,13 +10,13 @@ async function retrieveImpl(event) {
         if(allowedAttributes.includes(event.attribute) && event.daySpan <= maxDaySpan) {
             console.log('attribute =', event.attribute);
             console.log('lookback =', (new Date(new Date().setDate(new Date().getDate()-event.daySpan)).toISOString()));
-            console.log('query =', `SELECT collectedAt, ${event.attribute} FROM ${process.env.SDB_DOMAIN} WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-event.daySpan)).toISOString()}'`);
+            console.log('query =', `SELECT collectedAt, ${event.attribute} FROM \`${process.env.SDB_DOMAIN}\` WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-event.daySpan)).toISOString()}'`);
             return {
                 statusCode: 200,
                 headers: headers,
                 body: await sdb.select(
                     {
-                        SelectExpression: `SELECT collectedAt, ${event.attribute} FROM ${process.env.SDB_DOMAIN} WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-event.daySpan)).toISOString()}'`
+                        SelectExpression: `SELECT collectedAt, ${event.attribute} FROM \`${process.env.SDB_DOMAIN}\` WHERE collectedAt > '${new Date(new Date().setDate(new Date().getDate()-event.daySpan)).toISOString()}'`
                     }
                 )
             };
