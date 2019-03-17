@@ -68,10 +68,14 @@ Resources:
         Statement:
         - Effect: Allow
           Principal:
-            Service:
-            - lambda.amazonaws.com
+            Federated: cognito-identity.amazonaws.com
           Action:
-          - sts:AssumeRole
+          - sts:AssumeRoleWithWebIdentity
+          Condition:
+            StringEquals: 
+              "cognito-identity.amazonaws.com:aud": !Ref enviroRetrieveInvokeIDPool
+            "ForAnyValue:StringLike":
+              "cognito-identity.amazonaws.com:amr": unauthenticated
       Policies:
       - PolicyName: !Sub "${AWS::StackName}RetrieveInvoke"
         PolicyDocument:
