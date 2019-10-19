@@ -9,7 +9,7 @@ Resources:
     Properties:
       FunctionName: !Sub "${AWS::StackName}Store"
       Handler: enviroStore.handler
-      Runtime: nodejs8.10
+      Runtime: nodejs10.x
       AutoPublishAlias: live
       DeploymentPreference:
         Type: AllAtOnce
@@ -29,7 +29,7 @@ Resources:
     Properties:
       FunctionName: !Sub "${AWS::StackName}Retrieve"
       Handler: enviroRetrieve.handler
-      Runtime: nodejs8.10
+      Runtime: nodejs10.x
       AutoPublishAlias: live
       DeploymentPreference:
         Type: AllAtOnce
