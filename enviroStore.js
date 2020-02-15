@@ -1,5 +1,5 @@
-var sdb = require('aws-sdb-promise');
-var headers = require('corsHeaders');
+var sdb = require('./util/aws-sdb-promise');
+var headers = require('./util/corsHeaders');
 var uuidv1 = require('uuid/v1');
 
 // Implement store logic
