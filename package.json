@@ -1,0 +1,6 @@
+{
+	"name": "enviro",
+	"dependencies": {
+		"uuid": "latest"
+	}
+}
