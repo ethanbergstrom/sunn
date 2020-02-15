@@ -1,5 +1,5 @@
-var sdb = require('aws-sdb-promise');
-var headers = require('corsHeaders');
+var sdb = require('./util/aws-sdb-promise');
+var headers = require('./util/corsHeaders');
 
 const allowedAttributes = ['temperature','accelerometer','heading','lux','pressure','rgb'];
 const minuteSpan = 60;
