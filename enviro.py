@@ -26,7 +26,7 @@ def invoke_lambda(lux, rgb, accelerometer, heading, temperature, pressure):
 
 if __name__ == '__main__':
 
-    temp_calibrate_factor = 1.3
+    temp_calibrate_factor = 2.0
 
     try:
         lux = light.light()
