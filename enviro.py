@@ -3,13 +3,8 @@ import json
 import datetime
 import time
 
-from subprocess import PIPE, Popen
+from gpiozero import CPUTemperature
 from envirophat import weather, light, motion, leds
-
-def get_cpu_temperature():
-    process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE)
-    output, _error = process.communicate()
-    return float(output[output.index('=') + 1:output.rindex("'")])
 
 def invoke_lambda(lux, rgb, accelerometer, heading, temperature, pressure):
     client = boto3.client('lambda')
@@ -42,7 +37,7 @@ if __name__ == '__main__':
         temperature = weather.temperature()
         # Calibrate ambient temperature by adjusting for CPU heat
         # https://medium.com/initial-state/tutorial-review-enviro-phat-for-raspberry-pi-4cd6d8c63441
-        temperature_calibrated = temperature - ((get_cpu_temperature() - temperature) / temp_calibrate_factor)
+        temperature_calibrated = temperature - ((CPUTemperature().temperature - temperature) / temp_calibrate_factor)
         pressure = weather.pressure()
         invoke_lambda(lux, rgb, accelerometer, heading, temperature_calibrated, pressure)
 
