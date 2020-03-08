@@ -9,7 +9,8 @@ from envirophat import weather, light, motion, leds
 def invoke_lambda(lux, rgb, accelerometer, heading, temperature, pressure):
     client = boto3.client('lambda')
     payload = {
-        'collectedAt': datetime.datetime.utcnow().isoformat(),
+        # Python's datetime library violates ISO 8601, so we need to add "Z" at the end to indicate GMT+0
+        'collectedAt': datetime.datetime.utcnow().isoformat() + 'Z',
         'lux': lux,
         'rgb': rgb,
         'accelerometer': accelerometer,
