@@ -1,6 +1,6 @@
-var sdb = require('./util/aws-sdb-promise');
-var headers = require('./util/corsHeaders');
-var uuidv1 = require('uuid/v1');
+const sdb = require('./util/aws-sdb-promise');
+const headers = require('./util/corsHeaders');
+const { v1: uuidv1 } = require('uuid');
 
 // Implement store logic
 async function storeImpl(event) {
