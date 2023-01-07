@@ -23,12 +23,6 @@
         title: ${Messages.solutionsHub.solutions.stravaQuickstarts.variables.compartmentTitle()}
         description: ${Messages.solutionsHub.solutions.stravaQuickstarts.variables.compartmentDescription()}
 
-      # region:
-      #   type: oci:identity:region:name
-      #   required: true
-      #   visible: false
-
-
     outputs:
 
       dashboard_url:
