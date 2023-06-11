@@ -5,6 +5,6 @@ resource "oci_nosql_table" "database" {
     table_limits {
         max_read_units = "25"
         max_write_units = "25"
-        max_storage_in_gbs = "5" 
+        max_storage_in_gbs = "5"
     }
 }

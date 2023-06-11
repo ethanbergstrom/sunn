@@ -9,17 +9,17 @@ resource "oci_identity_compartment" "stack_compartment" {
 
 module "oci-nosql" {
   source = "./modules/oci-nosql"
-  compartment_ocid = oci_identity_compartment.stack_compartment_name.id
+  compartment_ocid = oci_identity_compartment.stack_compartment.id
 }
 
 module "oci-devops-functions" {
   source = "./modules/oci-devops-functions"
-  compartment_ocid = oci_identity_compartment.stack_compartment_name.id
+  compartment_ocid = oci_identity_compartment.stack_compartment.id
 }
 
 module "oci-functions" {
   source = "./modules/oci-functions"
-  compartment_ocid = oci_identity_compartment.stack_compartment_name.id
+  compartment_ocid = oci_identity_compartment.stack_compartment.id
 }
 
 # output "dashboard_url" {
