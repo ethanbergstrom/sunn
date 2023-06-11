@@ -1,25 +1,25 @@
-resource "random_string" "topic_name" {
-  length  = 10
-  special = false
-}
+# resource "random_string" "topic_name" {
+#   length  = 10
+#   special = false
+# }
 
-resource "random_string" "project_name" {
-  length  = 10
-  special = false
-}
+# resource "random_string" "project_name" {
+#   length  = 10
+#   special = false
+# }
 
-resource "oci_ons_notification_topic" "notification_topic" {
-  compartment_id = var.compartment_ocid
-  name = random_string.topic_name.result
-}
+# resource "oci_ons_notification_topic" "notification_topic" {
+#   compartment_id = var.compartment_ocid
+#   name = random_string.topic_name.result
+# }
 
-resource "oci_devops_project" "project" {
-  compartment_id = var.compartment_ocid
-  name = random_string.project_name.result
-  notification_config {
-    topic_id = oci_ons_notification_topic.notification_topic.id
-  }
-}
+# resource "oci_devops_project" "project" {
+#   compartment_id = var.compartment_ocid
+#   name = random_string.project_name.result
+#   notification_config {
+#     topic_id = oci_ons_notification_topic.notification_topic.id
+#   }
+# }
 
 # resource "oci_devops_deploy_environment" "function" {
 #   deploy_environment_type = "FUNCTION"
