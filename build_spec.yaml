@@ -1,8 +1,9 @@
 version: 0.1
 component: build
+timeoutInSeconds: 300
 steps:
   - type: Command
-    timeoutInSeconds: 1200
+    timeoutInSeconds: 60
     name: "Build Function into container image"
     command: |
       fn build --verbose
