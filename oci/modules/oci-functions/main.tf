@@ -38,7 +38,10 @@ resource "oci_functions_application" "function_application" {
   display_name = random_uuid.application_name.result
   subnet_ids = [oci_core_subnet.function_subnet.id]
   # Set env vars for all functions
-  config = var.config
+  config = {
+    "TABLE_NAME" = "enviro"
+    "COMPARTMENT_OCID" = var.compartment_ocid
+  }
 }
 
 resource "oci_functions_function" "enviroStore" {
