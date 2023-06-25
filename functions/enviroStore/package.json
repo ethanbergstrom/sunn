@@ -1,0 +1,5 @@
+{
+	"dependencies": {
+		"@fnproject/fdk": ">=0.0.54"
+	}
+}

@@ -3,14 +3,16 @@ component: build
 timeoutInSeconds: 300
 steps:
   - type: Command
-    timeoutInSeconds: 60
-    name: "Build Function into container image"
+    name: "Discover and build functions"
     command: |
-      fn build --verbose
+      find ./functions/* -type d | xargs -I {} fn build --verbose {}
 
 outputArtifacts:
-  - name: output01
+  - name: enviroRetrieve
     type: DOCKER_IMAGE
-    # this location tag doesn't effect the tag used to deliver the container image
-    # to the Container Registry
-    location: enviro:0.0.1
+    # this location tag doesn't effect the tag used to deliver the container image to the Container Registry
+    location: enviroRetrieve:0.0.1
+  - name: enviroStore
+    type: DOCKER_IMAGE
+    # this location tag doesn't effect the tag used to deliver the container image to the Container Registry
+    location: enviroStore:0.0.1
