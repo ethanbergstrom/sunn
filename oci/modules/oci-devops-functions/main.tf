@@ -213,14 +213,14 @@ resource "oci_functions_function" "enviroStore" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroStore"
   memory_in_mbs  = "128"
-  image = locals.imageArtifacts[index(locals.imageArtifacts[*].output_artifact_name,"EnviroStoreOutput")].image_uri
+  image = local.imageArtifacts[index(locals.imageArtifacts[*].output_artifact_name,"EnviroStoreOutput")].image_uri
 }
 
 resource "oci_functions_function" "enviroRetrieve" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroRetrieve"
   memory_in_mbs  = "128"
-  image = locals.imageArtifacts[index(locals.imageArtifacts[*].output_artifact_name,"EnviroRetrieveOutput")].image_uri
+  image = local.imageArtifacts[index(locals.imageArtifacts[*].output_artifact_name,"EnviroRetrieveOutput")].image_uri
 }
 
 # Create the Deployment Environments from the functions generated
