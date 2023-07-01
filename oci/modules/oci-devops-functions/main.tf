@@ -206,21 +206,25 @@ resource "oci_functions_application" "function_application" {
 }
 
 locals {
-  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs[*].delivered_artifacts[*]
+  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs[*].delivered_artifacts[*].items[*]
+  enviroStoreIndex = index(local.imageArtifacts[*].output_artifact_name,"EnviroStoreOutput")
+  enviroRetrieveIndex = index(local.imageArtifacts[*].output_artifact_name,"EnviroRetrieveOutput")
+  enviroStoreURI = local.imageArtifacts[enviroStoreIndex].image_uri
+  enviroRetrieveURI = local.imageArtifacts[enviroRetrieveIndex].image_uri
 }
 
 resource "oci_functions_function" "enviroStore" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroStore"
   memory_in_mbs  = "128"
-  image = local.imageArtifacts[index(local.imageArtifacts[*].output_artifact_name,"EnviroStoreOutput")].image_uri
+  image = local.enviroStoreURI
 }
 
 resource "oci_functions_function" "enviroRetrieve" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroRetrieve"
   memory_in_mbs  = "128"
-  image = local.imageArtifacts[index(local.imageArtifacts[*].output_artifact_name,"EnviroRetrieveOutput")].image_uri
+  image = local.enviroRetrieveURI
 }
 
 # Create the Deployment Environments from the functions generated
