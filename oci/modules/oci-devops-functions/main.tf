@@ -104,6 +104,7 @@ resource oci_devops_connection githubConnection {
   access_token = oci_vault_secret.githubSecret.id
   connection_type = "GITHUB_ACCESS_TOKEN"
   display_name = "GitHub"
+  project_id = oci_devops_project.project.id
 }
 
 resource oci_devops_build_pipeline_stage buildImageStage {
@@ -205,7 +206,7 @@ resource "oci_functions_application" "function_application" {
 }
 
 locals {
-  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts
+  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[*]
 }
 
 resource "oci_functions_function" "enviroStore" {
