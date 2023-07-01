@@ -210,7 +210,7 @@ locals {
 }
 
 locals {
-  artifactNames = toset(local.imageArtifacts[*].output_artifact_name)
+  artifactNames = local.imageArtifacts[*].output_artifact_name
 }
 
 locals {
