@@ -206,7 +206,7 @@ resource "oci_functions_application" "function_application" {
 }
 
 locals {
-  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs[*].delivered_artifacts[*].items[*]
+  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs[*].delivered_artifacts[*].items
 }
 
 locals {
