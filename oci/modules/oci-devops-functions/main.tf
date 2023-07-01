@@ -207,9 +207,18 @@ resource "oci_functions_application" "function_application" {
 
 locals {
   imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs[*].delivered_artifacts[*].items[*]
+}
+
+locals {
   artifactNames = toset(local.imageArtifacts[*].output_artifact_name)
+}
+
+locals {
   enviroStoreIndex = index(local.artifactNames, "EnviroStoreOutput")
   enviroRetrieveIndex = index(local.artifactNames, "EnviroRetrieveOutput")
+}
+
+locals {
   enviroStoreURI = local.imageArtifacts[local.enviroStoreIndex].image_uri
   enviroRetrieveURI = local.imageArtifacts[local.enviroRetrieveIndex].image_uri
 }
