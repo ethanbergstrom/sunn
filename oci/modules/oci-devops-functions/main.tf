@@ -17,7 +17,7 @@ resource "oci_kms_vault" "vault" {
 
 resource "oci_kms_key" "master_key" {
   #Required
-  compartment_id      = var.compartment_id
+  compartment_id      = var.compartment_ocid
   display_name        = "Master Key"
   management_endpoint = oci_kms_vault.vault.management_endpoint
 
@@ -202,14 +202,14 @@ resource "oci_functions_function" "enviroStore" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroStore"
   memory_in_mbs  = "128"
-  image = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[index(oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts.*.output_artifact_name,"EnviroStoreOutput")].image_uri
+  image = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[index(oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[*].output_artifact_name,"EnviroStoreOutput")].image_uri
 }
 
 resource "oci_functions_function" "enviroRetrieve" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroRetrieve"
   memory_in_mbs  = "128"
-  image = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[index(oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts.*.output_artifact_name,"EnviroRetrieveOutput")].image_uri
+  image = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[index(oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[*].output_artifact_name,"EnviroRetrieveOutput")].image_uri
 }
 
 # Create the Deployment Environments from the functions generated
