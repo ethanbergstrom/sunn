@@ -31,9 +31,15 @@ resource "oci_kms_key" "master_key" {
 resource oci_vault_secret githubSecret {
   compartment_id = var.compartment_ocid
   key_id = oci_kms_key.master_key.id
-  secret_content = "gobbledygook"
   secret_name    = "githubToken"
   vault_id       = oci_kms_vault.vault.id
+  secret_content {
+    #Required
+    content_type = "BASE64"
+
+    #Optional
+    content = "PHZhcj4mbHQ7YmFzZTY0X2VuY29kZWRfc2VjcmV0X2NvbnRlbnRzJmd0OzwvdmFyPg=="
+  }
 }
 
 resource "oci_ons_notification_topic" "notification_topic" {
@@ -198,18 +204,22 @@ resource "oci_functions_application" "function_application" {
   }
 }
 
+locals {
+  imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts
+}
+
 resource "oci_functions_function" "enviroStore" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroStore"
   memory_in_mbs  = "128"
-  image = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[index(oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[*].output_artifact_name,"EnviroStoreOutput")].image_uri
+  image = locals.imageArtifacts[index(locals.imageArtifacts[*].output_artifact_name,"EnviroStoreOutput")].image_uri
 }
 
 resource "oci_functions_function" "enviroRetrieve" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroRetrieve"
   memory_in_mbs  = "128"
-  image = oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[index(oci_devops_build_run.initial_build_run.build_outputs.delivered_artifacts[*].output_artifact_name,"EnviroRetrieveOutput")].image_uri
+  image = locals.imageArtifacts[index(locals.imageArtifacts[*].output_artifact_name,"EnviroRetrieveOutput")].image_uri
 }
 
 # Create the Deployment Environments from the functions generated
