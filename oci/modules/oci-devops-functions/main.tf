@@ -89,8 +89,8 @@ resource oci_devops_deploy_artifact EnviroRetrieveArtifact {
 }
 
 resource oci_devops_build_pipeline buildPipeline {
-  build_pipeline_parameters {
-  }
+#   build_pipeline_parameters {
+#   }
   project_id = oci_devops_project.project.id
 }
 
