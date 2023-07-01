@@ -11,12 +11,14 @@ resource "random_string" "project_name" {
 resource "oci_kms_vault" "vault" {
     #Required
     compartment_id = var.compartment_ocid
+    display_name = "Test Vault"
     vault_type = "DEFAULT"
 }
 
 resource "oci_kms_key" "master_key" {
   #Required
   compartment_id      = var.compartment_id
+  display_name        = "Master Key"
   management_endpoint = data.oci_kms_vault.vault.management_endpoint
 
   key_shape {
