@@ -206,8 +206,8 @@ resource "oci_identity_policy" "devopsPolicy" {
   statements = [
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage devops-family in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage functions-family in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage repos in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use ons-topics in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use repos in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to read secret-family in compartment id ${var.compartment_ocid}",
   ]
 }
