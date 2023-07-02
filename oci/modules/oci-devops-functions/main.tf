@@ -301,8 +301,60 @@ resource "oci_functions_function" "enviroRetrieve" {
   image = "${oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[1].image_uri}:latest"
 }
 
-# Create the Deployment Environments from the functions generated
+resource oci_devops_deploy_environment enviroStoreDeployEnv {
+  deploy_environment_type = "FUNCTION"
+  display_name            = "enviroStore"
+  function_id = oci_functions_function.enviroStore.id
+  project_id = oci_devops_project.project.id
+}
 
-# Create the Deployment Pipeline with the Environments and Artifacts
+resource oci_devops_deploy_environment enviroRetrieveDeployEnv {
+  deploy_environment_type = "FUNCTION"
+  display_name            = "enviroRetrieve"
+  function_id = oci_functions_function.enviroRetrieve.id
+  project_id = oci_devops_project.project.id
+}
+
+resource oci_devops_deploy_pipeline deployPipeline {
+  project_id = oci_devops_project.project.id
+}
+
+resource oci_devops_deploy_stage enviroStoreDeployStage {
+  deploy_pipeline_id = oci_devops_deploy_pipeline.deployPipeline.id
+  deploy_stage_predecessor_collection {
+    items {
+      id = oci_devops_deploy_pipeline.deployPipeline.id
+    }
+  }
+  deploy_stage_type = "DEPLOY_FUNCTION"
+  display_name                    = "enviroStore"
+  docker_image_deploy_artifact_id = oci_devops_deploy_artifact.EnviroStoreArtifact.id
+  function_deploy_environment_id = oci_devops_deploy_environment.enviroStoreDeployEnv.id
+}
+
+resource oci_devops_deploy_stage enviroRetrieveDeployStage {
+  deploy_pipeline_id = oci_devops_deploy_pipeline.deployPipeline.id
+  deploy_stage_predecessor_collection {
+    items {
+      id = oci_devops_deploy_pipeline.deployPipeline.id
+    }
+  }
+  deploy_stage_type = "DEPLOY_FUNCTION"
+  display_name                    = "enviroRetrieve"
+  docker_image_deploy_artifact_id = oci_devops_deploy_artifact.EnviroRetrieveArtifact.id
+  function_deploy_environment_id = oci_devops_deploy_environment.enviroRetrieveDeployEnv.id
+}
 
 # Append the Triger Deploy build step to the Build pipeline
+resource oci_devops_build_pipeline_stage buildTriggerDeployStage {
+  build_pipeline_id = oci_devops_build_pipeline.buildPipeline.id
+  build_pipeline_stage_predecessor_collection {
+    items {
+      id = oci_devops_build_pipeline_stage.deliverArtifactStage.id
+    }
+  }
+  build_pipeline_stage_type = "TRIGGER_DEPLOYMENT_PIPELINE"
+  deploy_pipeline_id = oci_devops_deploy_pipeline.deployPipeline.id
+  display_name       = "Trigger Deployment"
+  is_pass_all_parameters_enabled = "true"
+}
