@@ -14,6 +14,7 @@ module "oci-nosql" {
 
 module "oci-devops-functions" {
   source = "./modules/oci-devops-functions"
+  region = var.region
   compartment_ocid = oci_identity_compartment.stack_compartment.id
 }
 
