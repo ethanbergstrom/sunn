@@ -188,9 +188,9 @@ resource oci_logging_log devopsLog {
   retention_duration = "30"
 }
 
-resource "oci_identity_dynamic_group" "devopsDynGrouop" {
+resource "oci_identity_dynamic_group" "devopsDynGroup" {
   compartment_id = var.tenancy_ocid
-  name           = "devopsDynGrouop"
+  name           = "devopsDynGroup"
   # Dynamic groups require a description
   description    = "Dynamic group to define the scope of Enviro DevOps Project resources"
   # matching_rule  = "ANY {instance.compartment.id = '${data.oci_identity_compartments.compartments1.compartments[0].id}'}"
@@ -204,11 +204,12 @@ resource "oci_identity_policy" "devopsPolicy" {
   compartment_id = var.compartment_ocid
 
   statements = [
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage devops-family in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage functions-family in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage repos in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use ons-topics in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to read secret-family in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group id ${oci_identity_dynamic_group.devopsDynGroup.id} to manage devops-family in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group id ${oci_identity_dynamic_group.devopsDynGroup.id} to manage functions-family in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group id ${oci_identity_dynamic_group.devopsDynGroup.id} to manage generic-artifacts in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group id ${oci_identity_dynamic_group.devopsDynGroup.id} to manage repos in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group id ${oci_identity_dynamic_group.devopsDynGroup.id} to use ons-topics in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group id ${oci_identity_dynamic_group.devopsDynGroup.id} to read secret-family in compartment id ${var.compartment_ocid}",
   ]
 }
 
