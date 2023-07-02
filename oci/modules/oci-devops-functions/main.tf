@@ -290,7 +290,7 @@ resource "oci_functions_function" "enviroStore" {
   display_name   = "enviroStore"
   memory_in_mbs  = "128"
   # image = local.enviroStoreURI
-  image = oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[0].image_uri
+  image = "${oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[0].image_uri}:latest"
 }
 
 resource "oci_functions_function" "enviroRetrieve" {
@@ -298,7 +298,7 @@ resource "oci_functions_function" "enviroRetrieve" {
   display_name   = "enviroRetrieve"
   memory_in_mbs  = "128"
   # image = local.enviroRetrieveURI
-  image = oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[1].image_uri
+  image = "${oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[1].image_uri}:latest"
 }
 
 # Create the Deployment Environments from the functions generated
