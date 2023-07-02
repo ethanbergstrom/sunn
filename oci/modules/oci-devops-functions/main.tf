@@ -87,7 +87,7 @@ resource oci_devops_deploy_artifact EnviroStoreArtifact {
     deploy_artifact_source_type = "OCIR"
     image_digest = ""
     # image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroStoreRepo:0.0.1"
-    image_uri    = "${var.region}/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroStoreRepoName.result}"
+    image_uri    = "${var.region}.ocir.io/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroStoreRepoName.result}"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
   display_name         = "EnviroStoreRepo"
@@ -100,7 +100,7 @@ resource oci_devops_deploy_artifact EnviroRetrieveArtifact {
     deploy_artifact_source_type = "OCIR"
     image_digest = ""
     # image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroRetrieveRepo:0.0.1"
-    image_uri    = "${var.region}/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroRetrieveRepoName.result}"
+    image_uri    = "${var.region}.ocir.io/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroRetrieveRepoName.result}"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
   display_name         = "EnviroRetrieveRepo"
@@ -206,7 +206,7 @@ resource "oci_identity_policy" "devopsPolicy" {
   statements = [
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage devops-family in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage functions-family in compartment id ${var.compartment_ocid}",
-    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage repos in compartment id ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use repos in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use ons-topics in compartment id ${var.compartment_ocid}",
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to read secret-family in compartment id ${var.compartment_ocid}",
   ]
