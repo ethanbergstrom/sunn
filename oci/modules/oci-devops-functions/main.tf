@@ -47,16 +47,29 @@ resource "oci_ons_notification_topic" "notification_topic" {
   name = random_string.topic_name.result
 }
 
+resource "random_string" "enviroStoreRepoName" {
+  length  = 5
+  numeric  = false
+  special = false
+  upper = false
+}
+
+resource "random_string" "enviroRetrieveRepoName" {
+  length  = 5
+  numeric  = false
+  special = false
+  upper = false
+}
+
 resource oci_artifacts_container_repository EnviroStoreRepo {
   compartment_id = var.compartment_ocid
-  display_name   = "EnviroStoreRepo"
+  display_name   = random_string.enviroStoreRepoName.result
 }
 
 resource oci_artifacts_container_repository EnviroRetrieveRepo {
   compartment_id = var.compartment_ocid
-  display_name   = "EnviroRetrieveRepo"
+  display_name   = random_string.enviroRetrieveRepoName.result
 }
-
 
 resource "oci_devops_project" "project" {
   compartment_id = var.compartment_ocid
@@ -66,15 +79,18 @@ resource "oci_devops_project" "project" {
   }
 }
 
+data "oci_objectstorage_namespace" "ns" {}
+
 resource oci_devops_deploy_artifact EnviroStoreArtifact {
   argument_substitution_mode = "SUBSTITUTE_PLACEHOLDERS"
   deploy_artifact_source {
     deploy_artifact_source_type = "OCIR"
     image_digest = ""
-    image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroStoreRepo:0.0.1"
+    # image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroStoreRepo:0.0.1"
+    image_uri    = "${provider.oci.region}/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroStoreRepoName.result}"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
-  display_name         = "EnviroRetrieveRepo"
+  display_name         = "EnviroStoreRepo"
   project_id = oci_devops_project.project.id
 }
 
@@ -83,7 +99,8 @@ resource oci_devops_deploy_artifact EnviroRetrieveArtifact {
   deploy_artifact_source {
     deploy_artifact_source_type = "OCIR"
     image_digest = ""
-    image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroRetrieveRepo:0.0.1"
+    # image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroRetrieveRepo:0.0.1"
+    image_uri    = "${provider.oci.region}/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroRetrieveRepoName.result}"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
   display_name         = "EnviroRetrieveRepo"
@@ -173,8 +190,10 @@ resource oci_logging_log devopsLog {
 
 # Do initial run to populate the repository with images
 resource "oci_devops_build_run" "initial_build_run" {
-    #Required
-    build_pipeline_id = oci_devops_build_pipeline.buildPipeline.id
+  #Required
+  build_pipeline_id = oci_devops_build_pipeline.buildPipeline.id
+  # Ensure it runs after DeliverArtifact stage is in place, and Logging is enabled
+  depends_on = [oci_logging_log.devopsLog,oci_devops_build_pipeline_stage.deliverArtifactStage]
 }
 
 resource "random_uuid" "application_name" {
