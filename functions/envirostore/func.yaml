@@ -1,5 +1,5 @@
 schema_version: 20180708
-name: enviroStore
+name: envirostore
 type: async
 version: 0.0.1
 runtime: node
