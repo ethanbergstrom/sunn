@@ -8,11 +8,11 @@ steps:
       find ./functions/* -type d | xargs -I {} fn build --verbose {}
 
 outputArtifacts:
-  - name: enviroRetrieve
+  - name: EnviroRetrieveOutput
     type: DOCKER_IMAGE
     # this location tag doesn't effect the tag used to deliver the container image to the Container Registry
-    location: enviroRetrieve:0.0.1
-  - name: enviroStore
+    location: enviroretrieve:0.0.1
+  - name: EnviroStoreOutput
     type: DOCKER_IMAGE
     # this location tag doesn't effect the tag used to deliver the container image to the Container Registry
-    location: enviroStore:0.0.1
+    location: envirostore:0.0.1
