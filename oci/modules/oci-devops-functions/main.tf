@@ -191,6 +191,8 @@ resource oci_logging_log devopsLog {
 resource "oci_identity_dynamic_group" "devopsDynGrouop" {
   compartment_id = var.compartment_ocid
   name           = "devopsDynGrouop"
+  # Dynamic groups require a description
+  description    = "Dynamic group to define the scope of Enviro DevOps Project resources"
   # matching_rule  = "ANY {instance.compartment.id = '${data.oci_identity_compartments.compartments1.compartments[0].id}'}"
   matching_rule = "All {resource.compartment.id = '${var.compartment_ocid}', Any {resource.type = 'devopsdeploypipeline', resource.type = 'devopsbuildpipeline', resource.type = 'devopsrepository', resource.type = 'devopsconnection', resource.type = 'devopstrigger'}}"
 }
