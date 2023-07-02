@@ -201,7 +201,7 @@ resource "oci_identity_policy" "devopsPolicy" {
   name           = "devopsPolicy"
   # Policies require a description
   description    = "Provide the necessary permissions for the Enviro DevOps Project to complete its pipeline steps"
-  compartment_id = var.compartment_ocid
+  compartment_id = var.tenancy_ocid
 
   statements = [
     "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage devops-family in compartment ${var.compartment_ocid}",
