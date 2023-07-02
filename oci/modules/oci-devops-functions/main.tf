@@ -74,9 +74,7 @@ resource oci_devops_deploy_artifact EnviroStoreArtifact {
     image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroStoreRepo:0.0.1"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
-  display_name         = "EnviroStoreArtifact"
-  freeform_tags = {
-  }
+  display_name         = "EnviroRetrieveRepo"
   project_id = oci_devops_project.project.id
 }
 
@@ -89,8 +87,6 @@ resource oci_devops_deploy_artifact EnviroRetrieveArtifact {
   }
   deploy_artifact_type = "DOCKER_IMAGE"
   display_name         = "EnviroRetrieveRepo"
-  freeform_tags = {
-  }
   project_id = oci_devops_project.project.id
 }
 
@@ -151,6 +147,28 @@ resource oci_devops_build_pipeline_stage deliverArtifactStage {
     }
   }
   display_name = "DeliverArtifact"
+}
+
+resource oci_logging_log_group devopsLogGroup {
+  compartment_id = var.compartment_ocid
+  display_name = "DevOpsLogGroup"
+}
+
+resource oci_logging_log devopsLog {
+  configuration {
+    # compartment_id = oci_artifacts_container_configuration.export_container_configuration.id
+    source {
+      category    = "all"
+      resource    = oci_devops_project.project.id
+      service     = "devops"
+      source_type = "OCISERVICE"
+    }
+  }
+  display_name = "DevOpsLog"
+  is_enabled         = "true"
+  log_group_id       = oci_logging_log_group.devopsLogGroup.id
+  log_type           = "SERVICE"
+  retention_duration = "30"
 }
 
 # Do initial run to populate the repository with images
