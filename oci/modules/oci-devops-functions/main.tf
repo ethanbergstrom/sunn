@@ -188,12 +188,32 @@ resource oci_logging_log devopsLog {
   retention_duration = "30"
 }
 
+resource "oci_identity_dynamic_group" "devopsDynGrouop" {
+  compartment_id = var.compartment_ocid
+  name           = "devopsDynGrouop"
+  # matching_rule  = "ANY {instance.compartment.id = '${data.oci_identity_compartments.compartments1.compartments[0].id}'}"
+  matching_rule = "All {resource.compartment.id = '${var.compartment_ocid}', Any {resource.type = 'devopsdeploypipeline', resource.type = 'devopsbuildpipeline', resource.type = 'devopsrepository', resource.type = 'devopsconnection', resource.type = 'devopstrigger'}}"
+}
+
+resource "oci_identity_policy" "devopsPolicy" {
+  name           = "devopsPolicy"
+  compartment_id = var.compartment_ocid
+
+  statements = [
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage devops-family in compartment ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to manage functions-family in compartment ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use ons-topics in compartment ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to use repos in compartment ${var.compartment_ocid}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.devopsDynGrouop.name} to read secret-family in compartment ${var.compartment_ocid}",
+  ]
+}
+
 # Do initial run to populate the repository with images
 resource "oci_devops_build_run" "initial_build_run" {
   #Required
   build_pipeline_id = oci_devops_build_pipeline.buildPipeline.id
-  # Ensure it runs after DeliverArtifact stage is in place, and Logging is enabled
-  depends_on = [oci_logging_log.devopsLog,oci_devops_build_pipeline_stage.deliverArtifactStage]
+  # Ensure it runs after DeliverArtifact stage is in place, Logging is enabled, and necessarily permissions are granted
+  depends_on = [oci_logging_log.devopsLog,oci_devops_build_pipeline_stage.deliverArtifactStage,oci_identity_policy.devopsPolicy]
 }
 
 resource "random_uuid" "application_name" {
