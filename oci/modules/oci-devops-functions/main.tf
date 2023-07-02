@@ -189,7 +189,7 @@ resource oci_logging_log devopsLog {
 }
 
 resource "oci_identity_dynamic_group" "devopsDynGrouop" {
-  compartment_id = var.compartment_ocid
+  compartment_id = var.tenancy_ocid
   name           = "devopsDynGrouop"
   # Dynamic groups require a description
   description    = "Dynamic group to define the scope of Enviro DevOps Project resources"

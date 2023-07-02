@@ -16,6 +16,7 @@ module "oci-devops-functions" {
   source = "./modules/oci-devops-functions"
   region = var.region
   compartment_ocid = oci_identity_compartment.stack_compartment.id
+  tenancy_ocid = var.tenancy_ocid
 }
 
 # module "oci-functions" {
