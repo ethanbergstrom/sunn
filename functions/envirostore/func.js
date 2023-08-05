@@ -17,11 +17,11 @@ fdk.handle(async function (input) {
 				createdAt: new Date().toISOString(),
 				collectedAt: String(input.collectedAt),
 				temperature: String(input.temperature),
-				accelerometer: String(input.accelerometer),
-				heading: String(input.accelerometer),
+				// accelerometer: String(input.accelerometer),
+				// heading: String(input.accelerometer),
 				lux: String(input.lux),
 				pressure: String(input.pressure),
-				rgb: String(input.rgb)
+				// rgb: String(input.rgb)
 			}
 		})
 	}
