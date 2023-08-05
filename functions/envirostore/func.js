@@ -15,10 +15,10 @@ fdk.handle(async function (input) {
 			tableName: process.env.TABLE_NAME,
 			row: {
 				createdAt: new Date().toISOString(),
-				collectedAt: String(input.collectedAt),
-				temperature: String(input.temperature),
-				lux: String(input.lux),
-				pressure: String(input.pressure)
+				collectedAt: new Date(input.collectedAt),
+				temperature: input.temperature,
+				lux: input.lux,
+				pressure: input.pressure
 			}
 		})
 	}
