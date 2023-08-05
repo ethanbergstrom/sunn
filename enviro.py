@@ -1,46 +1,38 @@
+#!/usr/bin/env python3
 import boto3
 import json
 import datetime
-import time
-
+from ltr559 import LTR559
+from bme280 import BME280
 from gpiozero import CPUTemperature
-from envirophat import weather, light, motion, leds
+try:
+    from smbus2 import SMBus
+except ImportError:
+    from smbus import SMBus
 
-def invoke_lambda(lux, rgb, accelerometer, heading, temperature, pressure):
-    client = boto3.client('lambda')
-    payload = {
-        # Python's datetime library violates ISO 8601, so we need to add "Z" at the end to indicate GMT+0
-        'collectedAt': datetime.datetime.utcnow().isoformat() + 'Z',
-        'lux': lux,
-        'rgb': rgb,
-        'accelerometer': accelerometer,
-        'heading': heading,
-        'temperature': temperature,
-        'pressure': pressure
-    }
+# The LTR559 captures light levels
+ltr559 = LTR559()
 
-    client.invoke(
-        FunctionName = 'caerusEnviroStore',
-        Payload = json.dumps(payload)
-    )
+# The BME280 captures temperature, pressure, and humidity
+# Must be set up in 'forced' mode to discard the initial junk readings
+bme280 = BME280(i2c_dev=SMBus(1))
+bme280.setup(mode="forced")
 
-if __name__ == '__main__':
+# Calibrate ambient temperature by adjusting for CPU heat
+# https://medium.com/initial-state/tutorial-review-enviro-phat-for-raspberry-pi-4cd6d8c63441
+temperature_raw = bme280.get_temperature()
+temperature_calibrated = temperature_raw - ((CPUTemperature().temperature - temperature_raw) / 2.5)
 
-    temp_calibrate_factor = 2.0
+payload = {
+    # Python's datetime library violates ISO 8601, so we need to add "Z" at the end to indicate GMT+0
+    'collectedAt': datetime.datetime.utcnow().isoformat() + 'Z',
+    'lux': ltr559.get_lux(),
+    'temperature': temperature_calibrated,
+    'pressure': bme280.get_pressure()
+}
 
-    try:
-        lux = light.light()
-        leds.on()
-        rgb = str(light.rgb())[1:-1].replace(' ', '')
-        leds.off()
-        accelerometer = str(motion.accelerometer())[1:-1].replace(' ', '')
-        heading = motion.heading()
-        temperature = weather.temperature()
-        # Calibrate ambient temperature by adjusting for CPU heat
-        # https://medium.com/initial-state/tutorial-review-enviro-phat-for-raspberry-pi-4cd6d8c63441
-        temperature_calibrated = temperature - ((CPUTemperature().temperature - temperature) / temp_calibrate_factor)
-        pressure = weather.pressure()
-        invoke_lambda(lux, rgb, accelerometer, heading, temperature_calibrated, pressure)
-
-    except KeyboardInterrupt:
-        leds.off()
+client = boto3.client('lambda')
+client.invoke(
+    FunctionName = 'caerusEnviroStore',
+    Payload = json.dumps(payload)
+)
