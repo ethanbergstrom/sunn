@@ -11,10 +11,15 @@ const client = new NoSQLClient({
 
 const allowedAttributes = ['temperature', 'lux', 'pressure'];
 
-fdk.handle(function (input) {
+fdk.handle(async function (input) {
 	try {
+		var resultSet = []
 		const enviroAttributes = input.attributes.filter(value => allowedAttributes.includes(value));
-		return client.query(`SELECT collectedAt,${enviroAttributes} FROM ${process.env.TABLE_NAME} WHERE collectedAt > '${new Date(new Date() - 3600000).toISOString()}'`)
+		const query = `SELECT collectedAt,${enviroAttributes} FROM ${process.env.TABLE_NAME} WHERE collectedAt > '${new Date(new Date() - 3600000).toISOString()}'`
+        for await(let result of client.queryIterable(query)) {
+			resultSet.concat(result.rows)
+        }
+		return resultSet
 	} catch (err) {
 		console.log(JSON.stringify(err, undefined, 2));
 		return err;
