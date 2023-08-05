@@ -379,3 +379,22 @@ resource oci_devops_build_pipeline_stage buildTriggerDeployStage {
   display_name       = "Trigger Deployment"
   is_pass_all_parameters_enabled = "true"
 }
+
+resource "oci_identity_dynamic_group" enviroFnAppDynGroup {
+  compartment_id = var.tenancy_ocid
+  name           = "enviroFnAppDynGroup"
+  # Dynamic groups require a description
+  description    = "Dynamic group to define the scope of Enviro Fn resource identities"
+  matching_rule = "All {resource.compartment.id = '${var.compartment_ocid}', resource.type = 'fnfunc'}}"
+}
+
+resource "oci_identity_policy" environFnAppPolicy {
+  name           = "environFnAppPolicy"
+  # Policies require a description
+  description    = "Provide the necessary permissions for the Enviro DevOps Project to complete its pipeline steps"
+  compartment_id = var.compartment_ocid
+
+  statements = [
+    "Allow dynamic-group id ${oci_identity_dynamic_group.enviroFnAppDynGroup.id} to use nosql-rows in compartment id ${var.compartment_ocid}"
+  ]
+}
