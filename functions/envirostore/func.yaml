@@ -3,5 +3,6 @@ name: envirostore
 type: async
 version: 0.0.1
 runtime: node
+build_image: fnproject/node:18
 run_image: fnproject/node:18
 entrypoint: node func.js
