@@ -21,9 +21,7 @@ fdk.handle(async function (input) {
 				pressure: input.pressure
 			}
 		)
-	}
-
-	catch (err) {
+	} catch (err) {
 		console.log(JSON.stringify(err, undefined, 2));
 		return err;
 	}
