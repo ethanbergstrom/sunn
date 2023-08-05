@@ -7,27 +7,9 @@ resource "oci_identity_compartment" "stack_compartment" {
     description = var.stack_compartment_description
 }
 
-module "oci-nosql" {
-  source = "./modules/oci-nosql"
-  compartment_ocid = oci_identity_compartment.stack_compartment.id
-}
-
 module "oci-devops-functions" {
   source = "./modules/oci-devops-functions"
   region = var.region
   compartment_ocid = oci_identity_compartment.stack_compartment.id
   tenancy_ocid = var.tenancy_ocid
 }
-
-# module "oci-functions" {
-#   source = "./modules/oci-functions"
-#   compartment_ocid = oci_identity_compartment.stack_compartment.id
-# }
-
-# output "dashboard_url" {
-#   value = replace("${oci_database_autonomous_database.strava_autonomous_database.connection_urls.0.sql_dev_web_url}admin/_sdw/dashboards/?name=Strava%20Dashboard%20Powered%20by%20Oracle%20REST%20Data%20Services","sql-developer","")
-# }
-
-# output "sdw_url" {
-#   value = oci_database_autonomous_database.strava_autonomous_database.connection_urls.0.sql_dev_web_url
-# }
