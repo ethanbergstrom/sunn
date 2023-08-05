@@ -1,5 +1,6 @@
 {
 	"dependencies": {
-		"@fnproject/fdk": ">=0.0.54"
+		"@fnproject/fdk": ">=0.0.54",
+		"oracle-nosqldb": "latest"
 	}
 }
