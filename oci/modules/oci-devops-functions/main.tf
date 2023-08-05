@@ -287,7 +287,6 @@ resource oci_logging_log fnAppLog {
   retention_duration = "30"
 }
 
-
 resource "oci_functions_function" "enviroStore" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroStore"
