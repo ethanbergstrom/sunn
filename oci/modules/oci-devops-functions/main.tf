@@ -173,7 +173,6 @@ resource oci_logging_log_group devopsLogGroup {
 
 resource oci_logging_log devopsLog {
   configuration {
-    # compartment_id = oci_artifacts_container_configuration.export_container_configuration.id
     source {
       category    = "all"
       resource    = oci_devops_project.project.id
@@ -265,6 +264,27 @@ resource "oci_functions_application" "function_application" {
     "TABLE_NAME" = "enviro"
     "COMPARTMENT_OCID" = var.compartment_ocid
   }
+}
+
+resource oci_logging_log_group fnAppLogGroup {
+  compartment_id = var.compartment_ocid
+  display_name = "FnAppLogGroup"
+}
+
+resource oci_logging_log fnAppLog {
+  configuration {
+    source {
+      category    = "all"
+      resource    = oci_functions_application.function_application.id
+      service     = "functions"
+      source_type = "OCISERVICE"
+    }
+  }
+  display_name = "FnAppLog"
+  is_enabled         = "true"
+  log_group_id       = oci_logging_log_group.fnAppLogGroup.id
+  log_type           = "SERVICE"
+  retention_duration = "30"
 }
 
 # locals {
