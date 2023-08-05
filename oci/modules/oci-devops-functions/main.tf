@@ -220,16 +220,12 @@ resource "oci_devops_build_run" "initial_build_run" {
   depends_on = [oci_logging_log.devopsLog,oci_devops_build_pipeline_stage.deliverArtifactStage,oci_identity_policy.devopsPolicy]
 }
 
-resource "random_uuid" "database_name" {
-}
-
 resource "random_string" "database_name" {
   length  = 5
   numeric  = false
   special = false
   upper = false
 }
-
 
 resource "oci_nosql_table" "database" {
     compartment_id = var.compartment_ocid
