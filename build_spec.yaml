@@ -1,11 +1,18 @@
 version: 0.1
 component: build
 timeoutInSeconds: 300
+env:
+  exportedVariables:
+    - imageVersion
 steps:
   - type: Command
     name: "Discover and build functions"
     command: |
       find ./functions/* -type d | xargs -I {} fn build --verbose {}
+  - type: Command
+    name: "Export image version used by DevOps pipeline artifact delivery step"
+    command: |
+      imageVersion=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
 
 outputArtifacts:
   - name: EnviroRetrieveOutput

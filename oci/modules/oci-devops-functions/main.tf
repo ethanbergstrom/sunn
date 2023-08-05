@@ -86,8 +86,8 @@ resource oci_devops_deploy_artifact EnviroStoreArtifact {
   deploy_artifact_source {
     deploy_artifact_source_type = "OCIR"
     image_digest = ""
-    # image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroStoreRepo:0.0.1"
-    image_uri    = "${var.region}.ocir.io/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroStoreRepoName.result}"
+    ## The $$ in Terraform will let us use ${imageVersion} as a literal string and wont try to interpolte it into a Terraform variable, so that OCI can use it as a variable
+    image_uri    = "${var.region}.ocir.io/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroStoreRepoName.result}:$${imageVersion}"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
   display_name         = "EnviroStoreRepo"
@@ -99,8 +99,8 @@ resource oci_devops_deploy_artifact EnviroRetrieveArtifact {
   deploy_artifact_source {
     deploy_artifact_source_type = "OCIR"
     image_digest = ""
-    # image_uri    = "us-ashburn-1.ocir.io/idyr2jfufjre/EnviroRetrieveRepo:0.0.1"
-    image_uri    = "${var.region}.ocir.io/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroRetrieveRepoName.result}"
+    ## The $$ in Terraform will let us use ${imageVersion} as a literal string and wont try to interpolte it into a Terraform variable, so that OCI can use it as a variable
+    image_uri    = "${var.region}.ocir.io/${data.oci_objectstorage_namespace.ns.namespace}/${random_string.enviroRetrieveRepoName.result}:$${imageVersion}"
   }
   deploy_artifact_type = "DOCKER_IMAGE"
   display_name         = "EnviroRetrieveRepo"
@@ -287,29 +287,11 @@ resource oci_logging_log fnAppLog {
   retention_duration = "30"
 }
 
-# locals {
-#   imageArtifacts = oci_devops_build_run.initial_build_run.build_outputs[*].delivered_artifacts[*].items
-# }
-
-# locals {
-#   artifactNames = local.imageArtifacts[*].output_artifact_name
-# }
-
-# locals {
-#   enviroStoreIndex = index(local.artifactNames, "EnviroStoreOutput")
-#   enviroRetrieveIndex = index(local.artifactNames, "EnviroRetrieveOutput")
-# }
-
-# locals {
-#   enviroStoreURI = local.imageArtifacts[local.enviroStoreIndex].image_uri
-#   enviroRetrieveURI = local.imageArtifacts[local.enviroRetrieveIndex].image_uri
-# }
 
 resource "oci_functions_function" "enviroStore" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroStore"
   memory_in_mbs  = "128"
-  # image = local.enviroStoreURI
   image = "${oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[0].image_uri}:latest"
 }
 
@@ -317,7 +299,6 @@ resource "oci_functions_function" "enviroRetrieve" {
   application_id = oci_functions_application.function_application.id
   display_name   = "enviroRetrieve"
   memory_in_mbs  = "128"
-  # image = local.enviroRetrieveURI
   image = "${oci_devops_build_run.initial_build_run.build_outputs[0].delivered_artifacts[0].items[1].image_uri}:latest"
 }
 
