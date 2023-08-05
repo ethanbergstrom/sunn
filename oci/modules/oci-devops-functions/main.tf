@@ -274,7 +274,7 @@ resource oci_logging_log_group fnAppLogGroup {
 resource oci_logging_log fnAppLog {
   configuration {
     source {
-      category    = "all"
+      category    = "invoke"
       resource    = oci_functions_application.function_application.id
       service     = "functions"
       source_type = "OCISERVICE"
