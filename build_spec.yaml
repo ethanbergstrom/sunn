@@ -10,7 +10,7 @@ steps:
     command: |
       find ./functions/* -type d | xargs -I {} fn build --verbose {}
   - type: Command
-    name: "Export image version used by DevOps pipeline artifact delivery step"
+    name: "Export image version"
     command: |
       imageVersion=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
 
