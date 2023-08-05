@@ -11,16 +11,16 @@ const client = new NoSQLClient({
 
 fdk.handle(async function (input) {
 	try {
-		return await client.put({
-			tableName: process.env.TABLE_NAME,
-			row: {
+		return await client.put(
+			process.env.TABLE_NAME,
+			{
 				createdAt: new Date().toISOString(),
 				collectedAt: new Date(input.collectedAt),
 				temperature: input.temperature,
 				lux: input.lux,
 				pressure: input.pressure
 			}
-		})
+		)
 	}
 
 	catch (err) {
