@@ -192,7 +192,6 @@ resource "oci_identity_dynamic_group" "devopsDynGroup" {
   name           = "devopsDynGroup"
   # Dynamic groups require a description
   description    = "Dynamic group to define the scope of Enviro DevOps Project resources"
-  # matching_rule  = "ANY {instance.compartment.id = '${data.oci_identity_compartments.compartments1.compartments[0].id}'}"
   matching_rule = "All {resource.compartment.id = '${var.compartment_ocid}', Any {resource.type = 'devopsdeploypipeline', resource.type = 'devopsbuildpipeline', resource.type = 'devopsrepository', resource.type = 'devopsconnection', resource.type = 'devopstrigger'}}"
 }
 
@@ -404,5 +403,36 @@ resource "oci_identity_policy" environFnAppPolicy {
 
   statements = [
     "Allow dynamic-group id ${oci_identity_dynamic_group.enviroFnAppDynGroup.id} to use nosql-rows in compartment id ${var.compartment_ocid}"
+  ]
+}
+
+resource "oci_identity_user" enviroRetrieveSvcUser {
+  name           = "enviroRetrieveSvcUser"
+  # Policies require a description
+  description    = "Simple user with permission to invoke the enviroRetrieve function"
+  compartment_id = var.tenancy_ocid
+}
+
+resource "oci_identity_group" enviroRetrieveSvcGroup {
+  compartment_id = var.tenancy_ocid
+  name           = "enviroRetrieveSvcGroup"
+  # Dynamic groups require a description
+  description    = "Simple group with permission to invoke the enviroRetrieve function"
+}
+
+resource "oci_identity_user_group_membership" "test_user_group_membership" {
+    #Required
+    group_id = oci_identity_group.enviroRetrieveSvcGroup.id
+    user_id = oci_identity_user.enviroRetrieveSvcUser.id
+}
+
+resource "oci_identity_policy" environFnAppPolicy {
+  name           = "enviroRetrieveSvcPolicy"
+  # Policies require a description
+  description    = "Only allow enviroRetrieve service account access to invoke corresponding function"
+  compartment_id = var.compartment_ocid
+
+  statements = [
+    "Allow group id ${oci_identity_group.enviroRetrieveSvcGroup.id} to use fn-invocation in compartment id ${var.compartment_ocid} where target.function.id = '${oci_functions_function.enviroRetrieve.id}'"
   ]
 }
