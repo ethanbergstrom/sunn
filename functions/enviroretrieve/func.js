@@ -18,7 +18,7 @@ fdk.handle(async function (input) {
 		const query = `SELECT collectedAt,${enviroAttributes} FROM ${process.env.TABLE_NAME} WHERE collectedAt > '${new Date(new Date() - 3600000).toISOString()}'`
         for await(let result of client.queryIterable(query)) {
 			console.log("Our immediate result set is:"+result.rows)
-			resultSet.concat(result.rows)
+			resultSet.push(result.rows)
 			console.log("Our cumulative result set is:"+resultSet)
         }
 		return resultSet
