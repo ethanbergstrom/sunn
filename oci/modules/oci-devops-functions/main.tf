@@ -420,13 +420,13 @@ resource "oci_identity_group" enviroRetrieveSvcGroup {
   description    = "Simple group with permission to invoke the enviroRetrieve function"
 }
 
-resource "oci_identity_user_group_membership" "test_user_group_membership" {
+resource "oci_identity_user_group_membership" "enviroRetrieveSvcGroupMember" {
     #Required
     group_id = oci_identity_group.enviroRetrieveSvcGroup.id
     user_id = oci_identity_user.enviroRetrieveSvcUser.id
 }
 
-resource "oci_identity_policy" environFnAppPolicy {
+resource "oci_identity_policy" enviroRetrieveSvcPolicy {
   name           = "enviroRetrieveSvcPolicy"
   # Policies require a description
   description    = "Only allow enviroRetrieve service account access to invoke corresponding function"
