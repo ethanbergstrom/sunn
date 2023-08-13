@@ -268,11 +268,32 @@ resource "oci_core_default_route_table" "function_default_route" {
   }
 }
 
+resource oci_core_security_list apiSecurityList {
+  compartment_id = var.compartment_ocid
+  display_name = "apiSecurityList"
+  egress_security_rules {
+    destination      = "0.0.0.0/0"
+    protocol  = "6"
+  }
+  ingress_security_rules {
+    protocol    = "6"
+    source      = "0.0.0.0/0"
+    tcp_options {
+      max = "443"
+      min = "443"
+    }
+  }
+  vcn_id = oci_core_vcn.function_vcn.id
+}
+
 resource "oci_core_subnet" "function_subnet" {
   compartment_id = var.compartment_ocid
   vcn_id = oci_core_vcn.function_vcn.id
   # Use the entire VCN
   cidr_block = var.vcn_cidr_block
+  security_list_ids = [
+    oci_core_security_list.apiSecurityList.id
+  ]
 }
 
 resource "oci_functions_application" "function_application" {
@@ -406,33 +427,78 @@ resource "oci_identity_policy" environFnAppPolicy {
   ]
 }
 
-resource "oci_identity_user" enviroRetrieveSvcUser {
-  name           = "enviroRetrieveSvcUser"
-  # Policies require a description
-  description    = "Simple user with permission to invoke the enviroRetrieve function"
-  compartment_id = var.tenancy_ocid
+# resource "oci_identity_user" enviroRetrieveSvcUser {
+#   name           = "enviroRetrieveSvcUser"
+#   # Policies require a description
+#   description    = "Simple user with permission to invoke the enviroRetrieve function"
+#   compartment_id = var.tenancy_ocid
+# }
+
+# resource "oci_identity_group" enviroRetrieveSvcGroup {
+#   compartment_id = var.tenancy_ocid
+#   name           = "enviroRetrieveSvcGroup"
+#   # Dynamic groups require a description
+#   description    = "Simple group with permission to invoke the enviroRetrieve function"
+# }
+
+# resource "oci_identity_user_group_membership" "enviroRetrieveSvcGroupMember" {
+#     #Required
+#     group_id = oci_identity_group.enviroRetrieveSvcGroup.id
+#     user_id = oci_identity_user.enviroRetrieveSvcUser.id
+# }
+
+# resource "oci_identity_policy" enviroRetrieveSvcPolicy {
+#   name           = "enviroRetrieveSvcPolicy"
+#   # Policies require a description
+#   description    = "Only allow enviroRetrieve service account access to invoke corresponding function"
+#   compartment_id = var.compartment_ocid
+
+#   statements = [
+#     "Allow group id ${oci_identity_group.enviroRetrieveSvcGroup.id} to use fn-invocation in compartment id ${var.compartment_ocid} where target.function.id = '${oci_functions_function.enviroRetrieve.id}'"
+#   ]
+# }
+
+resource oci_apigateway_gateway enviroGateway {
+  compartment_id = var.compartment_ocid
+  display_name  = "enviroGateway"
+  endpoint_type = "PUBLIC"
+  subnet_id = oci_core_subnet.function_subnet.id
 }
 
-resource "oci_identity_group" enviroRetrieveSvcGroup {
+resource oci_apigateway_deployment envrioAPIDeploy {
+  compartment_id = var.compartment_ocid
+  display_name = "envrioAPIDeploy"
+  gateway_id  = oci_apigateway_gateway.enviroGateway.id
+  path_prefix = "/"
+  specification {
+    routes {
+      backend {
+        function_id = oci_functions_function.enviroRetrieve.id
+        type = "ORACLE_FUNCTIONS_BACKEND"
+      }
+      methods = [
+        "GET",
+      ]
+      path = "/enviroRetrieve"
+    }
+  }
+}
+
+resource "oci_identity_dynamic_group" "apiGatewayDynGroup" {
   compartment_id = var.tenancy_ocid
-  name           = "enviroRetrieveSvcGroup"
+  name           = "apiGatewayDynGroup"
   # Dynamic groups require a description
-  description    = "Simple group with permission to invoke the enviroRetrieve function"
+  description    = "Dynamic group to define the scope of API GateWay that can invoke EnviroRetrieve"
+  matching_rule = "All {resource.compartment.id = '${var.compartment_ocid}', resource.type = 'apigateway'}"
 }
 
-resource "oci_identity_user_group_membership" "enviroRetrieveSvcGroupMember" {
-    #Required
-    group_id = oci_identity_group.enviroRetrieveSvcGroup.id
-    user_id = oci_identity_user.enviroRetrieveSvcUser.id
-}
-
-resource "oci_identity_policy" enviroRetrieveSvcPolicy {
-  name           = "enviroRetrieveSvcPolicy"
+resource "oci_identity_policy" "apiGatewayPolicy" {
+  name           = "apiGatewayPolicy"
   # Policies require a description
-  description    = "Only allow enviroRetrieve service account access to invoke corresponding function"
+  description    = "Provide the necessary permissions for the API Gateway to invoke the EnviroRetrieve function"
   compartment_id = var.compartment_ocid
 
   statements = [
-    "Allow group id ${oci_identity_group.enviroRetrieveSvcGroup.id} to use fn-invocation in compartment id ${var.compartment_ocid} where target.function.id = '${oci_functions_function.enviroRetrieve.id}'"
+    "Allow dynamic-group id ${oci_identity_dynamic_group.apiGatewayDynGroup.id} to use fn-invocation in compartment id ${var.compartment_ocid} where target.function.id = '${oci_functions_function.enviroRetrieve.id}"
   ]
 }
