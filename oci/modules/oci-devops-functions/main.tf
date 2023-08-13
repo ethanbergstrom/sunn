@@ -484,6 +484,45 @@ resource oci_apigateway_deployment envrioAPIDeploy {
   }
 }
 
+resource oci_logging_log_group apiGatewayLogGroup {
+  compartment_id = var.compartment_ocid
+  display_name = "apiGatewayLogGroup"
+}
+
+resource oci_logging_log envrioAPIDeploy_execution {
+  configuration {
+    compartment_id = var.compartment_ocid
+    source {
+      category    = "execution"
+      resource    = oci_apigateway_deployment.envrioAPIDeploy.id
+      service     = "apigateway"
+      source_type = "OCISERVICE"
+    }
+  }
+  display_name = "envrioAPIDeploy_execution"
+  is_enabled         = "true"
+  log_group_id       = oci_logging_log_group.apiGatewayLogGroup.id
+  log_type           = "SERVICE"
+  retention_duration = "30"
+}
+
+resource oci_logging_log envrioAPIDeploy_access {
+  configuration {
+    compartment_id = var.compartment_ocid
+    source {
+      category    = "access"
+      resource    = oci_apigateway_deployment.envrioAPIDeploy.id
+      service     = "apigateway"
+      source_type = "OCISERVICE"
+    }
+  }
+  display_name = "envrioAPIDeploy_access"
+  is_enabled         = "true"
+  log_group_id       = oci_logging_log_group.apiGatewayLogGroup.id
+  log_type           = "SERVICE"
+  retention_duration = "30"
+}
+
 resource "oci_identity_dynamic_group" "apiGatewayDynGroup" {
   compartment_id = var.tenancy_ocid
   name           = "apiGatewayDynGroup"
