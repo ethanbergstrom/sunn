@@ -480,6 +480,24 @@ resource oci_apigateway_deployment envrioAPIDeploy {
         "POST",
       ]
       path = "/enviroRetrieve"
+      request_policies {
+        cors {
+          allowed_headers = [
+            "*",
+          ]
+          allowed_methods = [
+            "*",
+          ]
+          allowed_origins = [
+            "*",
+          ]
+          exposed_headers = [
+            "*",
+          ]
+          is_allow_credentials_enabled = "false"
+          max_age_in_seconds           = "0"
+        }
+      }
     }
   }
 }
