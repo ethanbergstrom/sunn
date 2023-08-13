@@ -499,6 +499,6 @@ resource "oci_identity_policy" "apiGatewayPolicy" {
   compartment_id = var.compartment_ocid
 
   statements = [
-    "Allow dynamic-group id ${oci_identity_dynamic_group.apiGatewayDynGroup.id} to use fn-invocation in compartment id ${var.compartment_ocid} where target.function.id = '${oci_functions_function.enviroRetrieve.id}"
+    "Allow dynamic-group id ${oci_identity_dynamic_group.apiGatewayDynGroup.id} to use fn-invocation in compartment id ${var.compartment_ocid} where target.function.id = '${oci_functions_function.enviroRetrieve.id}'"
   ]
 }
