@@ -477,7 +477,7 @@ resource oci_apigateway_deployment envrioAPIDeploy {
         type = "ORACLE_FUNCTIONS_BACKEND"
       }
       methods = [
-        "GET",
+        "POST",
       ]
       path = "/enviroRetrieve"
     }
