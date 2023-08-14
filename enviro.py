@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import boto3
+import oci
 import json
 import datetime
 from ltr559 import LTR559
@@ -31,8 +31,16 @@ payload = {
     'pressure': bme280.get_pressure()
 }
 
-client = boto3.client('lambda')
-client.invoke(
-    FunctionName = 'caerusEnviroStore',
-    Payload = json.dumps(payload)
+ociConfig = oci.config.from_file()
+fnFunctionEndpoint = 'https://aojotlk5pzq.us-ashburn-1.functions.oci.oraclecloud.com'
+fnFunctionID = 'ocid1.fnfunc.oc1.iad.aaaaaaaaivvrmtoao7ipj6jbeaourfjiy7tdsvir5pp4bbol34s2xhe723mq'
+
+fnInvokeClient = oci.functions.FunctionsInvokeClient(
+   config = ociConfig,
+   service_endpoint = fnFunctionEndpoint
+)
+
+fnInvokeClient.invoke_function(
+   function_id = fnFunctionID,
+   invoke_function_body = json.dumps(payload) 
 )
