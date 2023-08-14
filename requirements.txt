@@ -5,3 +5,5 @@ oci
 
 # Dont try to compile locally, it will take forever
 --prefer-binary
+
+# Other dependencies for the sensors should be installed via the intructions found at https://github.com/pimoroni/enviroplus-python
