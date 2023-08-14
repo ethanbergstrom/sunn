@@ -31,16 +31,10 @@ payload = {
     'pressure': bme280.get_pressure()
 }
 
-ociConfig = oci.config.from_file()
-fnFunctionEndpoint = 'https://aojotlk5pzq.us-ashburn-1.functions.oci.oraclecloud.com'
-fnFunctionID = 'ocid1.fnfunc.oc1.iad.aaaaaaaaivvrmtoao7ipj6jbeaourfjiy7tdsvir5pp4bbol34s2xhe723mq'
-
-fnInvokeClient = oci.functions.FunctionsInvokeClient(
-   config = ociConfig,
-   service_endpoint = fnFunctionEndpoint
-)
-
-fnInvokeClient.invoke_function(
-   function_id = fnFunctionID,
+oci.functions.FunctionsInvokeClient(
+   config = oci.config.from_file(),
+   service_endpoint = 'https://aojotlk5pzq.us-ashburn-1.functions.oci.oraclecloud.com'
+).invoke_function(
+   function_id = 'ocid1.fnfunc.oc1.iad.aaaaaaaaivvrmtoao7ipj6jbeaourfjiy7tdsvir5pp4bbol34s2xhe723mq',
    invoke_function_body = json.dumps(payload) 
 )
