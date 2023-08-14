@@ -15,7 +15,7 @@ fdk.handle(async function (input) {
 	try {
 		var resultSet = []
 		const enviroAttributes = input.attributes.filter(value => allowedAttributes.includes(value));
-		const query = `SELECT collectedAt,${enviroAttributes} FROM ${process.env.TABLE_NAME} WHERE collectedAt > '${new Date(new Date() - 3600000).toISOString()}'`
+		const query = `SELECT collectedAt,${enviroAttributes} FROM ${process.env.TABLE_NAME} WHERE collectedAt > '${new Date(new Date() - 3600000).toISOString()}' ORDER BY collectedAt`
         for await(let result of client.queryIterable(query)) {
 			for (let row of result.rows) {
 				resultSet.push(row)
