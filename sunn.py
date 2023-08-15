@@ -33,8 +33,8 @@ payload = {
 
 oci.functions.FunctionsInvokeClient(
    config = oci.config.from_file(),
-   service_endpoint = 'https://aojotlk5pzq.us-ashburn-1.functions.oci.oraclecloud.com'
+   service_endpoint = 'https://ke46dwugv6a.us-ashburn-1.functions.oci.oraclecloud.com'
 ).invoke_function(
-   function_id = 'ocid1.fnfunc.oc1.iad.aaaaaaaaivvrmtoao7ipj6jbeaourfjiy7tdsvir5pp4bbol34s2xhe723mq',
+   function_id = 'ocid1.fnfunc.oc1.iad.aaaaaaaa6ohmd66a7kjt7eb42bjkegc45d72vyca4ulmjdzakulnexviqa3q',
    invoke_function_body = json.dumps(payload) 
 )
