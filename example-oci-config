@@ -1,0 +1,6 @@
+[DEFAULT]
+region=us-phoenix-1
+tenancy=<TENANCY OCID>
+user=<USER OCID>
+key_file=~/.oci/oci_api_key.pem
+fingerprint=<API KEY FINGERPRINT>
